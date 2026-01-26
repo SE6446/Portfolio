@@ -1,0 +1,57 @@
+/* Reset some default styles */
+body, h1, h2, h3, h4, a {
+    margin: 0;
+    padding: 0;
+    color: #333; /* Dark gray color for text */
+}
+
+body {
+    line-height: 1.6;
+    background-color: #f4f4f4; /* Light gray background */
+    padding: 20px;
+    font-size: 16px; /* Base font size */
+}
+
+h1 {
+    color: #444; /* Slightly darker color for headings */
+    margin-bottom: 0.5em;
+}
+
+h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    color: #555; /* A bit lighter than h1 */
+}
+
+h3, h4 {
+    color: #666; /* Even lighter for less important headings */
+    margin-top: 0.5em;
+    margin-bottom: 0.25em;
+}
+
+a {
+    color: #007bff; /* Bootstrap-like blue for links */
+    text-decoration: none; /* No underlines to keep it clean */
+}
+
+a:hover {
+    text-decoration: underline; /* Underline on hover for clarity */
+}
+
+/* Center aligned div for links and content */
+.center {
+    text-align: center;
+    margin: 20px 0; /* Add some spacing around */
+}
+
+/* Additional styling can go here for forms, buttons, etc. */
+
+/* Styling for larger screens */
+@media (min-width: 768px) {
+    body {
+        width: 75%; /* Limit body width on larger screens */
+        margin: 0 auto; /* Center the body */
+    }
+
+    /* More custom styles for larger displays can be added here */
+}

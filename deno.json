@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --watch main.ts ",
+    "start": "deno --allow-net --allow-read run main.ts "
+  },
+  "imports": {
+    "@deno/gfm": "jsr:@deno/gfm@^0.11.0",
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/http": "jsr:@std/http@^1.0.23"
+  }
+}

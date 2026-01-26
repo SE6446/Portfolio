@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<body>
+  <link
+    href="https://fonts.googleapis.com/css?family=Aldrich"
+    rel="stylesheet"
+  />
+  <script defer="">
+    var link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    link.href = "../../favicon.ico";
+  </script>
+  <style>
+    body {
+      font-family: "Aldrich", sans-serif;
+      margin: 20px;
+      background-color: blanchedalmond;
+    }
+  </style>
+  <title>Menu</title>
+</body>
+<html>
+  {{content}}
+  <a href="/">back to main page</a>
+</html>
