@@ -1,4 +1,4 @@
-export function blogHandler(req: Request, uri:URLSearchParams) {
+export function blogHandler(uri:URLSearchParams) {
     if (uri.has("post")) {
         let htmlTemplate = Deno.readTextFileSync("./blog/static/template.html");
         //console.log(htmlTemplate);
@@ -38,7 +38,7 @@ function listBlogPosts() {
 
 import { render } from "@deno/gfm";
 
-export async function blogSave(req: Request, debug = false): Promise<Response> {
+export async function blogSave(req: Request): Promise<Response> {
     // Check for GitHub token and personal token
     const result = [];
     const env = Deno.env;

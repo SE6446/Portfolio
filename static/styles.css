@@ -43,15 +43,3 @@ a:hover {
     text-align: center;
     margin: 20px 0; /* Add some spacing around */
 }
-
-/* Additional styling can go here for forms, buttons, etc. */
-
-/* Styling for larger screens */
-@media (min-width: 768px) {
-    body {
-        width: 75%; /* Limit body width on larger screens */
-        margin: 0 auto; /* Center the body */
-    }
-
-    /* More custom styles for larger displays can be added here */
-}
