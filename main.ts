@@ -1,6 +1,6 @@
 import { serveDir } from "@std/http/";
 import { blogHandler, blogSave } from "./blog/serveblog.ts";
-import { githubHandler, huggingfaceGetModelCard, huggingfaceHandler, privateProjectHandler, projectHandler } from "./projects/projects.ts";
+import { githubHandler, huggingfaceGetModelCard, huggingfaceHandler, privateProjectHandler } from "./projects/projects.ts";
 async function handler(req: Request): Promise<Response> {
     const url = new URL(req.url);
     if (url.pathname.startsWith("/blog")) {
