@@ -1,2 +1,5 @@
 deno.lock
 .env
+blog/html
+blog/markdown
+projects/private_projects.jsonl

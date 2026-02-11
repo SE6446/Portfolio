@@ -43,3 +43,7 @@ a:hover {
     text-align: center;
     margin: 20px 0; /* Add some spacing around */
 }
+
+.underline-on-hover:hover {
+    text-decoration: underline; /* Underline on hover for elements with this class */
+}

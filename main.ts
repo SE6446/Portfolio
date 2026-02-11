@@ -1,6 +1,6 @@
 import { serveDir } from "@std/http/";
 import { blogHandler, blogSave } from "./blog/serveblog.ts";
-import { githubHandler } from "./projects/projects.ts";
+import { githubHandler, huggingfaceGetModelCard, huggingfaceHandler, privateProjectHandler, projectHandler } from "./projects/projects.ts";
 async function handler(req: Request): Promise<Response> {
     const url = new URL(req.url);
     if (url.pathname.startsWith("/blog")) {
@@ -10,6 +10,9 @@ async function handler(req: Request): Promise<Response> {
         else if (req.method === "GET") {
             return blogHandler(url.searchParams);
         }
+    }
+    if (url.pathname.startsWith("/models")) {
+        return await huggingfaceGetModelCard(url.pathname.replace("/models/", ""));
     }
     if (url.pathname === "/" || url.pathname === "/index.html") {
         return mainPageHandler();
@@ -23,10 +26,12 @@ async function handler(req: Request): Promise<Response> {
 }
 
 async function mainPageHandler(): Promise<Response> {
-    const html = Deno.readTextFileSync("./static/index.html");
-    const updatedHtml = await githubHandler(html);
-    console.log(updatedHtml)
-    return new Response(updatedHtml, {
+    let html = Deno.readTextFileSync("./static/index.html");
+    html = await githubHandler(html);
+    //console.log(updatedHtml)
+    html = await huggingfaceHandler(html);
+    html = privateProjectHandler(html);
+    return new Response(html, {
         headers: { "Content-Type": "text/html" },
     });
 }

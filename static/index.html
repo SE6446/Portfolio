@@ -43,7 +43,7 @@
         </div>
       </div>
       <h2>AI engineer, Amateur researcher, ML practitioner</h2>
-      <h4 onclick="copy()">Email: archiemac07 [at] outlook [dot] com</h4>
+      <h4 class="underline-on-hover" onclick="copy()">Email: archiemac07 [at] outlook [dot] com</h4>
       <div class="row justify-content-center align-items-center">
         <div class="col-auto">
           <a href="https://github.com/SE6446"><img
@@ -68,11 +68,10 @@
     <a href="/blog">My blog (If I ever make one.)</a>
 
     <h1>Projects</h1>
-    <h2>Hosted Demos</h2>
-    <div class="container">
-      {{projects}}
-    </div>
     <h2>Containers and Huggingface Spaces</h2>
+    <div class="container">
+      {{spaces}}
+    </div>
     <h2>Public GitHub Repositories</h2>
     <div id="content-container">
       <div class=""></div>
@@ -81,16 +80,16 @@
       {{github_repos}}
     </div>
     <h2>Public Huggingface Models</h2>
-    <div class="container">
+    <div id="content-huggingface" class="container">
       {{huggingface_models}}
     </div>
     <h2>Private Projects</h2>
     <h3>
-      Code not publically available, license can be negotiated on request.
+      These are projects that I have worked on but have not made public for various reasons, such as being in early stages of development, containing sensitive information, or being intended for private use only. If you are interested please contact me to discuss further.
     </h3>
-
-    <a href="https://huggingface.co/spaces/SE6446/Untitled7_demo"
-    >One of my very first models!</a>
+    <div id="content-private" class="container">
+      {{private_projects}}
+    </div>
     <script src="script.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
