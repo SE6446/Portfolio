@@ -30,10 +30,10 @@ async function handler(req: Request): Promise<Response> {
 
 async function mainPageHandler(): Promise<Response> {
     let html = Deno.readTextFileSync("./static/index.html");
-    html = await githubHandler(html);
-    html = await spacesHandler(html);
+    //html = await githubHandler(html);
+    //html = await spacesHandler(html);
     //console.log(updatedHtml)
-    html = await huggingfaceHandler(html);
+    //html = await huggingfaceHandler(html);
     html = privateProjectHandler(html);
     return new Response(html, {
         headers: { "Content-Type": "text/html" },

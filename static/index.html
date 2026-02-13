@@ -1,69 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    
-    <link rel="stylesheet" href="styles.css">
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    >
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    >
-    <title>Archie Macdonald's portfolio</title>
-  </head>
-  <style>
-    body {
-      font-family: "Aldrich", serif;
-    }
-  </style>
 
-  <body class="device-width">
-    <div
-      class="container justify-content-center align-items-center text-center"
-    >
-      <div class="row justify-content-center align-items-center">
-        <div class="col-auto">
-          <h1>Archie Macdonald, professional waste of space!</h1>
-        </div>
-      </div>
-      <div class="row justify-content-center align-items-center">
-        <h2>AI engineer, Amateur researcher, ML practitioner</h2>
-      </div>
-      <div class="row justify-content-center align-items-center">
-        <h3>Contact me:</h3>
+<head>
+    <meta charset="UTF-8" name="Archie Macdonald's portfolio">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Archie Macdonald's portfolio</title>
+</head>
+
+<body class="device-width">
+    <div class="container justify-content-center align-items-center text-center">
         <div class="row justify-content-center align-items-center">
-          <h4
-            class="underline-on-hover"
-            onclick="_copy()"
-            style="cursor: pointer"
-          >
-            archiemac07 [at] outlook [dot] com
-          </h4>
+            <div class="col-auto">
+                <h1>Archie Macdonald, professional waste of space!</h1>
+            </div>
         </div>
-      </div>
-      <div class="row justify-content-center align-items-center">
+        <div class="row justify-content-center align-items-center">
+            <h2>AI engineer, Amateur researcher, ML practitioner</h2>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <h3>Contact me:</h3>
+        </div>
+
+        <div class="row justify-content-center align-items-center">
+            <h4 class="underline-on-hover" onclick="_copy()" style="cursor: pointer">
+                archiemac07 [at] outlook [dot] com
+            </h4>
+        </div>
+    </div>
+    <div class="row justify-content-center align-items-center">
         <div class="col-auto">
-          <a href="https://github.com/SE6446"><img
-              src="media/octocat.png"
-              alt="Github icon"
-              width="32"
-              height="32"
-            > Github profile</a>
+            <a href="https://github.com/SE6446"><img src="media/octocat.png" alt="Github icon" width="32" height="32">
+                Github profile</a>
         </div>
         <div class="col-auto">
-          <a href="https://huggingface.co/SE6446"><img
-              src="media/Hugging Face.png"
-              alt="Huggingface icon"
-              width="32"
-              height="32"
-            > Huggingface profile</a>
+            <a href="https://huggingface.co/SE6446"><img src="media/Hugging Face.png" alt="Huggingface icon" width="32"
+                    height="32"> Huggingface profile</a>
         </div>
-      </div>
+    </div>
     </div>
 
     <h1>Blog</h1>
@@ -71,45 +49,28 @@
 
     <h1>Projects</h1>
     <h2>Containers and Huggingface Spaces</h2>
-    <div class="container">
-      {{spaces}}
+    <div class="container" id="content-spaces">
+        {{spaces}}
     </div>
     <h2>Public GitHub Repositories</h2>
-    <div id="content-container">
-      <div class=""></div>
-    </div>
     <div id="content-github" class="container">
-      {{github_repos}}
+        {{github_repos}}
     </div>
     <h2>Public Huggingface Models</h2>
     <div id="content-huggingface" class="container">
-      {{huggingface_models}}
+        {{huggingface_models}}
     </div>
     <h2>Private Projects</h2>
     <h3>
-      These are projects that I have worked on but have not made public for
-      various reasons, such as being in early stages of development, containing
-      sensitive information, or being intended for private use only. If you are
-      interested please contact me to discuss further.
+        These are projects that I have worked on but have not made public for
+        various reasons, such as being in early stages of development, containing
+        sensitive information, or being intended for private use only. If you are
+        interested please contact me to discuss further.
     </h3>
     <div id="content-private" class="container">
-      {{private_projects}}
+        {{private_projects}}
     </div>
-    <script src="script.js"></script>
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
-      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+    <script src="script.js" defer></script>
+</body>
+
 </html>

@@ -3,3 +3,4 @@ deno.lock
 blog/html
 blog/markdown
 projects/private_projects.jsonl
+*.woff2
