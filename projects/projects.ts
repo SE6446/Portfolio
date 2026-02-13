@@ -32,10 +32,20 @@ export function projectHandler() {
   return htmlIndex;
 }
 
+
 /**
- * Edits the provided HTML index page by fetching public repositories from the GitHub API and injecting them into the page. Each repository is displayed as a card with its name, description, and a link to the repository on GitHub. If there is an error fetching the repositories, an error message is injected instead.
- * @param htmlIndex
- * @returns
+ * Fetches GitHub repositories for a specific user and generates HTML content
+ * to display them in a structured format.
+ *
+ * @deprecated This function is no longer used and will be removed in future versions. It was originally intended to embed Hugging Face spaces directly into the main page, but this approach has been reconsidered due to client side rendering beinf chosen over serverside.
+ * 
+ * @param htmlIndex - The HTML template string where the GitHub repositories
+ *                    will be injected.
+ * @returns A Promise that resolves to the updated HTML string with the
+ *          GitHub repositories included.
+ *
+ * @throws Will log an error to the console if the fetch operation fails
+ *         and replace the placeholder in the HTML with an error message.
  */
 export async function githubHandler(htmlIndex: string): Promise<string> {
   try {
@@ -79,10 +89,21 @@ export async function githubHandler(htmlIndex: string): Promise<string> {
   return htmlIndex;
 }
 
-/*
- * Fetches public models from Hugging Face API and injects them into the HTML index page. Private models are skipped as they should not be exposed publicly.
- * @param htmlIndex
- * @returns Promise<string>
+
+/**
+ * Fetches the list of models authored by "SE6446" from Hugging Face,
+ * filters out private models, and generates HTML widgets for each public model.
+ * The generated HTML is injected into the provided `htmlIndex` string by replacing
+ * the `{{huggingface_models}}` placeholder.
+ *
+ * @deprecated This function is no longer used and will be removed in future versions. It was originally intended to embed Hugging Face spaces directly into the main page, but this approach has been reconsidered due to client side rendering beinf chosen over serverside.
+ * 
+ * @param htmlIndex - The HTML template string containing the `{{huggingface_models}}` placeholder.
+ * @returns A promise that resolves to the updated HTML string with Hugging Face model widgets.
+ *
+ * @remarks
+ * - Private models are skipped and not displayed.
+ * - If fetching or processing fails, a fallback error message is injected.
  */
 export async function huggingfaceHandler(htmlIndex: string): Promise<string> {
   try {
@@ -217,6 +238,17 @@ export async function huggingfaceGetModelCard(
   }
 }
 
+/**
+ * Fetches and embeds public Hugging Face spaces authored by SE6446 into the provided HTML index.
+ *
+ * This function retrieves a list of spaces from the Hugging Face API, filters out private spaces
+ * and those that do not use the Gradio SDK, and constructs an iframe for each valid space.
+ * The resulting iframes are inserted into the HTML index at the location of the `{{spaces}}` placeholder.
+ *
+ * @deprecated This function is no longer used and will be removed in future versions. It was originally intended to embed Hugging Face spaces directly into the main page, but this approach has been reconsidered due to client side rendering beinf chosen over serverside.
+ * @param htmlIndex - The HTML string where the spaces will be embedded.
+ * @returns A Promise that resolves to the updated HTML string with the embedded spaces.
+ */
 export async function spacesHandler(htmlIndex: string): Promise<string> {
   const uri = `https://huggingface.co/api/spaces?author=SE6446`;
   try {
