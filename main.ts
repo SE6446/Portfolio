@@ -1,6 +1,6 @@
 import { serveDir } from "@std/http/";
 import { blogHandler, blogSave } from "./blog/serveblog.ts";
-import { githubHandler, huggingfaceGetModelCard, huggingfaceHandler, privateProjectHandler } from "./projects/projects.ts";
+import { githubHandler, huggingfaceGetModelCard, huggingfaceHandler, privateProjectHandler, receivePrivateProject, spacesHandler } from "./projects/projects.ts";
 async function handler(req: Request): Promise<Response> {
     const url = new URL(req.url);
     if (url.pathname.startsWith("/blog")) {
@@ -13,6 +13,9 @@ async function handler(req: Request): Promise<Response> {
     }
     if (url.pathname.startsWith("/models")) {
         return await huggingfaceGetModelCard(url.pathname.replace("/models/", ""));
+    }
+    if (url.pathname.startsWith("/addProject") && req.method === "POST") {
+        return await receivePrivateProject(req);
     }
     if (url.pathname === "/" || url.pathname === "/index.html") {
         return mainPageHandler();
@@ -28,6 +31,7 @@ async function handler(req: Request): Promise<Response> {
 async function mainPageHandler(): Promise<Response> {
     let html = Deno.readTextFileSync("./static/index.html");
     html = await githubHandler(html);
+    html = await spacesHandler(html);
     //console.log(updatedHtml)
     html = await huggingfaceHandler(html);
     html = privateProjectHandler(html);

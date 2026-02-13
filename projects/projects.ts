@@ -48,7 +48,7 @@ export async function githubHandler(htmlIndex: string): Promise<string> {
     for (const repo of data) {
       let repoWidget: string;
       if (count % 3 === 0) {
-        repoWidget = `<div class="row"><div class="col-md-4 mb-4">`;
+        repoWidget = `</div><div class="row"><div class="col-md-4 mb-4">`;
       } else {
         repoWidget = `<div class="col-md-4 mb-4">`;
       }
@@ -99,7 +99,7 @@ export async function huggingfaceHandler(htmlIndex: string): Promise<string> {
       }
       let modelWidget: string;
       if (count % 3 === 0) {
-        modelWidget = `<div class="row"><div class="col-md-4 mb-4">`;
+        modelWidget = `</div><div class="row"><div class="col-md-4 mb-4">`;
       } else {
         modelWidget = `<div class="col-md-4 mb-4">`;
       }
@@ -131,34 +131,49 @@ export async function huggingfaceHandler(htmlIndex: string): Promise<string> {
 }
 
 export function privateProjectHandler(htmlIndex: string): string {
-  const privateProjects = Deno.readTextFileSync(
-    "./projects/private_projects.jsonl",
-  ).split("\n").filter((line) => line.trim() !== "").map((line) =>
-    JSON.parse(line)
-  );
-  let privateProjectContent = "";
-  for (const project of privateProjects) {
-    privateProjectContent += `
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">${project.name}</h5>
-                        <p class="card-text">${project.description}</p>
-                    </div>
-                </div>
-            </div>`;
-  }
-  privateProjectContent += "</div></div>";
-  htmlIndex = htmlIndex.replace("{{private_projects}}", privateProjectContent);
-  return htmlIndex;
+    try{
+        const privateProjects = Deno.readTextFileSync(
+            "./projects/private_projects.jsonl",
+        ).split("\n").filter((line) => line.trim() !== "").map((line) =>
+            JSON.parse(line)
+        );
+        if (privateProjects.length === 0) {
+            return htmlIndex.replace(
+                "{{private_projects}}", "<p>No Private project to show for now.</p>"
+            );
+        }
+        let privateProjectContent = "";
+        for (const project of privateProjects) {
+          privateProjectContent += `
+              <div class="row">
+                  <div class="col-md-4 mb-4">
+                      <div class="card">
+                          <div class="card-body">
+                              <h5 class="card-title">${project.name}</h5>
+                              <p class="card-text">${project.description}</p>
+                          </div>
+                      </div>
+                  </div>`;
+        }
+        privateProjectContent += "</div></div>";
+        htmlIndex = htmlIndex.replace("{{private_projects}}", privateProjectContent);
+        return htmlIndex;
+
+
+    } catch (_error) {
+        // This should only error out if the file doesn't exist, in which case we can just return the page with no private projects shown.
+        return htmlIndex.replace(
+            "{{private_projects}}",
+            "<p>No Private project to show for now.</p>",
+        );
+    }
 }
 
 export async function huggingfaceGetModelCard(
   modelId: string,
 ): Promise<Response> {
   const uri = `https://huggingface.co/${modelId}/raw/main/README.md`;
-  const template = Deno.readTextFileSync("./static/huggingface_template.html");
+  let template = Deno.readTextFileSync("./static/huggingface_template.html");
   const response = await fetch(uri);
   if (!response.ok) {
     console.error(
@@ -170,7 +185,7 @@ export async function huggingfaceGetModelCard(
         template.replace(
           "{{content}}",
           `<h1>Model card not found for ${modelId}</h1>`,
-        ),
+        ).replace("{{title}}", modelId),
         {
           headers: { "Content-Type": "text/html" },
           status: 404,
@@ -181,7 +196,7 @@ export async function huggingfaceGetModelCard(
       template.replace(
         "{{content}}",
         `202 Accepted, ${response.status} ${response.statusText}`,
-      ),
+      ).replace("{{title}}", modelId),
       {
         headers: { "Content-Type": "text/html" },
         status: 207,
@@ -191,11 +206,12 @@ export async function huggingfaceGetModelCard(
     const markdown = await response.text().then((text) =>
       text.replace(/---.*?---/s, "").trim()
     ); // Remove metadata from the top of the README
-    console.log(markdown);
+    //console.log(markdown);
     const htmlContent = render(markdown);
-    console.log(htmlContent);
-    const finalTemplate = template.replace("{{content}}", htmlContent);
-    return new Response(finalTemplate, {
+    //console.log(htmlContent);
+    template = template.replace("{{content}}", htmlContent)
+    template = template.replace("{{title}}", modelId);
+    return new Response(template, {
       headers: { "Content-Type": "text/html" },
     });
   }
@@ -207,12 +223,16 @@ export async function spacesHandler(htmlIndex: string): Promise<string> {
     const response = await fetch(uri);
     const data = await response.json();
     let spaceList = "";
+    let count = 0;
     for (const space of data) {
       if (space.private) {
         continue; // Skip private
       }
       if (space.sdk !== "gradio") {
         continue; // Only support gradio spaces for now, as iframe embedding is much easier
+      }
+      if (space.id.toLowerCase().includes("portfolio")) {
+        continue; // Don't want to embed the portfolio space within itself, that would be cursed.
       }
       let name = space.id;
       name = name.replace("_", "-");
@@ -226,6 +246,10 @@ export async function spacesHandler(htmlIndex: string): Promise<string> {
             </div>
             `;
       spaceList += spaceWidget;
+      count++;
+    }
+    if (count === 0) {
+      spaceList = "<p>No publically available spaces found.</p>";
     }
     htmlIndex = htmlIndex.replace("{{spaces}}", spaceList);
   } catch (error) {
@@ -236,4 +260,28 @@ export async function spacesHandler(htmlIndex: string): Promise<string> {
     );
   }
   return htmlIndex;
+}
+
+function updatePrivateProjects(
+  newProject: { name: string; description: string },
+): void {
+  const projectLine = JSON.stringify(newProject);
+  Deno.writeTextFileSync(
+    "./projects/private_projects.jsonl",
+    projectLine + "\n",
+    {
+      append: true,
+    },
+  );
+}
+
+export async function receivePrivateProject(req: Request): Promise<Response> {
+  const body = await req.json();
+  try {
+    updatePrivateProjects(body);
+  } catch (error) {
+    console.error("Error saving private project:", error);
+    return new Response("Failed to save private project.", { status: 500 });
+  }
+  return new Response("Project received and saved.", { status: 200 });
 }

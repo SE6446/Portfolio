@@ -1,19 +1,6 @@
 <!DOCTYPE html>
 
 <body>
-  <link
-    href="https://fonts.googleapis.com/css?family=Aldrich"
-    rel="stylesheet"
-  />
-  <script defer="">
-    var link = document.querySelector("link[rel~='icon']");
-    if (!link) {
-      link = document.createElement("link");
-      link.rel = "icon";
-      document.head.appendChild(link);
-    }
-    link.href = "/favicon.ico";
-  </script>
   <style>
     body {
       font-family: "Aldrich", sans-serif;
@@ -24,7 +11,7 @@
 </body>
 <html>
   <h1>SE6446/blog</h1>
-  <div class="menu">
+  <div class="menu container">
     <ol>
       {{content}}
     </ol>

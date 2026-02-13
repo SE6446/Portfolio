@@ -29,7 +29,7 @@ function listBlogPosts() {
     for (const file of files) {
         if (file.isFile && file.name.endsWith(".html")) {
             const postId = file.name.replace(".html", "");
-            content += `<li><a href="/blog?post=${postId}">${postId}</a></li>`;
+            content += `<li><div class="card"><a href="/blog?post=${postId}">${postId}</a></div></li>`;
         }
     }
     return content;
