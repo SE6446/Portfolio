@@ -39,3 +39,7 @@ export function listProjects(): string[] {
     }
     return projects;
 }
+
+export function healthCheck(): Response {
+    return new Response("OK", { status: 200 });
+}

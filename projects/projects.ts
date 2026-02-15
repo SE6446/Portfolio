@@ -1,4 +1,4 @@
-import { listProjects } from "../api/bootstrapper.ts";
+import { listProjects } from "../api/api.ts";
 import { render } from "@deno/gfm";
 
 /**
@@ -245,7 +245,7 @@ export async function huggingfaceGetModelCard(
  * and those that do not use the Gradio SDK, and constructs an iframe for each valid space.
  * The resulting iframes are inserted into the HTML index at the location of the `{{spaces}}` placeholder.
  *
- * @deprecated This function is no longer used and will be removed in future versions. It was originally intended to embed Hugging Face spaces directly into the main page, but this approach has been reconsidered due to client side rendering beinf chosen over serverside.
+ * @deprecated This function is no longer used and will be removed in future versions. This approach has been replace with a clientside rendering approach.
  * @param htmlIndex - The HTML string where the spaces will be embedded.
  * @returns A Promise that resolves to the updated HTML string with the embedded spaces.
  */
@@ -308,7 +308,8 @@ function updatePrivateProjects(
 }
 
 export async function receivePrivateProject(req: Request): Promise<Response> {
-  const body = await req.json();
+  const body = await req.json(); 
+  //TODO: Add validation for the body and check for api token in headers before allowing the project to be added.
   try {
     updatePrivateProjects(body);
   } catch (error) {

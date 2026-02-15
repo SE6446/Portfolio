@@ -40,7 +40,6 @@ import { render } from "@deno/gfm";
 
 export async function blogSave(req: Request): Promise<Response> {
     // Check for GitHub token and personal token
-    const result = [];
     const env = Deno.env;
     const githubToken = env.get("GITHUB_TOKEN");
     console.assert(githubToken != undefined)
@@ -66,7 +65,7 @@ export async function blogSave(req: Request): Promise<Response> {
     }
     // To figure out where we are in the process and thus where we fail, we use stage variable for logging.
     let stage = 0;
-    const uint8Array = new Uint8Array();
+    
     try {
         const arrayBuffer = await file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
@@ -86,46 +85,13 @@ export async function blogSave(req: Request): Promise<Response> {
         }
         else if (stage === 1) {
             console.error("Failed to render blog to HTML.", e);
-            result.push(JSON.parse('{"id": 0, "message": "Failed to render blog to HTML."}, "status": 500'));
+            return new Response("Failed to render blog to HTML.", { status: 500 });
         }
         else if (stage === 2) {
             console.error("Failed to save blog HTML locally.", e);
-            result.push(JSON.parse('{"id": 0, "message": "Failed to save blog HTML locally."}, "status": 500'));
+            return new Response("Failed to save blog HTML locally.", { status: 500 });
         }
-    } finally {
-        result.push(JSON.parse('{"id": 0, "message": "Blog saved locally.", "status": 200}'));
     }
-
+    return new Response("Blog saved locally.", { status: 200 });
     
-
-    // PUT to github pages repo
-
-    const response = await fetch(`https://api.github.com/repos/SE6446/SE6446.github.io/contents/blogs/${file.name}`, {
-        method: "PUT",
-        headers: {
-            "Authorization": `Bearer ${githubToken}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            message: `Add new blog post. ${file.name}`,
-            content: btoa(String.fromCharCode(...uint8Array))
-        })
-    });
-
-    console.log("GitHub response:", response.status, response.statusText);
-    
-    if (response.ok) {
-        console.log("Blog mirrored to GitHub Pages.");
-        result.push(JSON.parse('{"id": 1, "message": "Blog mirrored to GitHub Pages.", "status": ' + response.status + '}'));
-    } else {
-        console.error("Failed to mirror blog to GitHub Pages.", response.status, response.statusText);
-        result.push(JSON.parse('{"id": 1, "message": "Failed to mirror blog to GitHub Pages.", "status": ' + response.status + '}'));
-    }
-
-       
-    
-
-
-
-    return new Response(JSON.stringify(result), { status: 207, headers: { "Content-Type": "application/json" } });
 }

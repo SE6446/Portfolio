@@ -48,12 +48,29 @@ async function githubHandler(document) {
 
 async function huggingfaceHandler(document) {
   try {
+    // this logic decides if we're on github pages or not, and if we are, it skips the runtime creation of huggingface content, as the content will already be created at build time. This is a bit janky, but it works and I don't want to spend more time on this than I already have.
+    const notOnPages = await fetch("/health")
+    let onPages = false;
+    switch (notOnPages.status) {
+      case 404:
+        console.warn("Not on the main page, skipping the runtime creation of huggingface content.");
+        onPages = true;
+        break;
+      case 200:
+        console.log("On the main page, proceeding with Hugging Face API call.");
+        break;
+      default:
+        console.warn(
+          `Unexpected response from health check: ${notOnPages.status}, proceeding with Hugging Face API call just in case.`,
+        );
+    }
     const response = await fetch(
       "https://huggingface.co/api/models?author=SE6446",
     );
     const data = await response.json();
     let count = 0;
     let modelList = "";
+
     for (const model of data) {
       if (model.private) {
         continue; // Skip private models, why the fuck does huggingface expose private models in the api?
@@ -72,7 +89,7 @@ async function huggingfaceHandler(document) {
                         <p class="card-text">Pipeline: ${
         model.pipeline_tag || "No pipeline tag"
       }</p>
-                        <a href=/models/${model.modelId} target="_blank" class="btn btn-primary">View Model Card</a>
+                        ${!onPages ? `<a href=/models/${model.modelId} target="_blank" class="btn btn-primary">View Model Card</a>` : ""}
                         <a href="https://huggingface.co/${model.modelId}" target="_blank" class="btn btn-primary">View on Hugging Face</a>
                     </div>
                 </div>    
