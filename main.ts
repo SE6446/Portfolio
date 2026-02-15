@@ -15,6 +15,11 @@ export async function handler(req: Request): Promise<Response> {
     if (url.pathname.startsWith("/health")) {
         return healthCheck();
     }
+    if (url.pathname.startsWith("/aboutme")) {
+        return Deno.readTextFile("./static/aboutme.html").then(html => new Response(html, {
+            headers: { "Content-Type": "text/html" },
+        }));
+     }
     if (url.pathname.startsWith("/models")) {
         return await huggingfaceGetModelCard(url.pathname.replace("/models/", ""));
     }

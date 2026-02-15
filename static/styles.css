@@ -35,7 +35,7 @@
 
 body {
   background-color: var(--bg-body);
-  color: var(--text-main);
+  color: var(--text-main) !important;
   font-family: var(--font-main);
   line-height: 1.6;
   font-family: 'Aldrich', sans-serif;
@@ -43,7 +43,7 @@ body {
 
 /* --- TYPOGRAPHY --- */
 h1, h2, h3, h4, h5 {
-  color: var(--secondary); /* Navy headers look professional */
+  color: var(--secondary) !important; /* Navy headers look professional */
   margin-bottom: 1rem;
   line-height: 1.2;
 }
@@ -51,6 +51,7 @@ h1, h2, h3, h4, h5 {
 p {
   margin-bottom: 1.5rem;
   max-width: 70ch; /* Readability limit */
+  color: var(--text-main) !important;
 }
 
 a {
@@ -119,10 +120,14 @@ a:hover {
   margin-bottom: 2rem;
 }
 
+.card:hover {
+  box-shadow: 0 6px 12px var(--shadow); /* Slightly stronger shadow on hover */
+}
+
 /* Navbar */
 .navbar {
-  background-color: var(--navy);
-  color: var(--off-white);
+  background-color: var(--primary);
+  color: var(--text-main);
   padding: 1rem 0;
 }
 
@@ -136,10 +141,11 @@ a:hover {
 
 .navbar a {
   color: var(--peach); /* Peach links pop on Navy bg */
+  
 }
 
 .navbar a:hover {
-  color: white;
+  color: var(--text-inv) !important; /* Off-white on hover for better contrast */
 }
 
 /* Footer */
@@ -175,11 +181,16 @@ input:focus, textarea:focus {
     --bg-card: #2a2a32;
     --text-main: var(--off-white);
     --secondary: var(--peach); /* Make headers peach in dark mode for contrast */
+    --shadow: 0 4px 6px rgba(255, 255, 255, 0.1); /* Lighter shadow for dark mode */
   }
   
   .card {
     border: 1px solid var(--navy);
     background: var(--bg-card);
+  }
+
+  .navbar {
+    background-color: var(--navy);
   }
 }
 
@@ -190,6 +201,12 @@ input:focus, textarea:focus {
   font-weight: 400;
   src: url(https://fonts.gstatic.com/s/aldrich/v22/MCoTzAn-1s3IGyJMVacY3w.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+.underline-on-hover:hover {
+    text-decoration: underline; /* Underline on hover for elements with this class */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    color: var(--crimson) !important;
 }
 
 /* Inline code (e.g., "Run npm install") */
