@@ -1,5 +1,5 @@
 import { serveDir } from "@std/http/";
-import { blogHandler, blogSave } from "./blog/serveblog.ts";
+import { blogDelete, blogHandler, blogSave } from "./blog/serveblog.ts";
 import { githubHandler, huggingfaceGetModelCard, huggingfaceHandler, privateProjectHandler, receivePrivateProject, spacesHandler } from "./projects/projects.ts";
 import { healthCheck } from "./api/api.ts";
 export async function handler(req: Request): Promise<Response> {
@@ -10,6 +10,16 @@ export async function handler(req: Request): Promise<Response> {
         }
         else if (req.method === "GET") {
             return blogHandler(url.searchParams);
+        } else if (req.method === "OPTIONS") {
+            return new Response(null, {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, POST, OPTIONS, DELETE",
+                    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                },
+            });
+        } else if (req.method === "DELETE") {
+            return await blogDelete(req);
         }
     }
     if (url.pathname.startsWith("/health")) {
