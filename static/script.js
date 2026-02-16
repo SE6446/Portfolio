@@ -1,10 +1,10 @@
 function _copy() {
-    const email = "archiemac07@outlook.com";
-    navigator.clipboard.writeText(email).then(() => {
-        alert("Email address copied to clipboard!");
-    }).catch(err => {
-        console.error("Failed to copy email: ", err);
-    });
+  const email = "archiemac07@outlook.com";
+  navigator.clipboard.writeText(email).then(() => {
+    alert("Email address copied to clipboard!");
+  }).catch((err) => {
+    console.error("Failed to copy email: ", err);
+  });
 }
 
 function githubCacheHandler(document) {
@@ -16,7 +16,6 @@ function githubCacheHandler(document) {
     let projectList = "";
     let count = 0;
     for (const repo of data) {
-      
       let repoWidget = "";
       if (count % 3 === 0) {
         repoWidget = `</div><div class="row"><div class="col-md-4 mb-4">`;
@@ -26,10 +25,14 @@ function githubCacheHandler(document) {
       repoWidget += `
             <a href="${repo.html_url}" target="_blank">
                 <div class="card">
-                <div class="right-align"><p class="card-text small">${repo.fork ? "Forked" : "Homebrew"}</p></div>
+                <div class="right-align"><p class="card-text small">${
+        repo.fork ? "Forked" : "Homebrew"
+      }</p></div>
                     <div class="card-body">
                         <h5 class="card-title">${repo.full_name}</h5>
-                        <p class="card-text">${repo.description || "No description"}</p>
+                        <p class="card-text">${
+        repo.description || "No description"
+      }</p>
                         <p class="card-text" id="repo-language-${repo.id}"></p>
                     </div>
                 </div>
@@ -41,21 +44,25 @@ function githubCacheHandler(document) {
     projectList += "</div>";
     document.getElementById("content-github").innerHTML = projectList;
     for (const repo of data) {
-      const languageElement = document.getElementById("repo-language-" + repo.id);
-      const languages = JSON.parse(localStorage.getItem("githubLanguages-" + repo.id));
+      const languageElement = document.getElementById(
+        "repo-language-" + repo.id,
+      );
+      const languages = JSON.parse(
+        localStorage.getItem("githubLanguages-" + repo.id),
+      );
 
       if (languageElement) {
-        languageElement.innerHTML = `Primary language: ${Object.keys(languages).join(`, `) || "Unknown"}`;
+        languageElement.innerHTML = `Languages: ${
+          Object.keys(languages).slice(0, 3).join(`, `) || "Unknown"
+        }`;
       }
     }
-
   } catch (error) {
     console.error("Error fetching GitHub repos:", error);
     document.getElementById("content-github").innerHTML =
       "<p>Failed to load GitHub repositories.</p>";
   }
 }
-
 
 async function githubHandler(document) {
   try {
@@ -68,7 +75,6 @@ async function githubHandler(document) {
     let projectList = "";
     let count = 0;
     for (const repo of data) {
-      
       let repoWidget = "";
       if (count % 3 === 0) {
         repoWidget = `</div><div class="row"><div class="col-md-4 mb-4">`;
@@ -78,10 +84,14 @@ async function githubHandler(document) {
       repoWidget += `
             <a href="${repo.html_url}" target="_blank">
                 <div class="card">
-                <div class="right-align"><p class="card-text small">${repo.fork ? "Forked" : "Homebrew"}</p></div>
+                <div class="right-align"><p class="card-text small">${
+        repo.fork ? "Forked" : "Homebrew"
+      }</p></div>
                     <div class="card-body">
                         <h5 class="card-title">${repo.full_name}</h5>
-                        <p class="card-text">${repo.description || "No description"}</p>
+                        <p class="card-text">${
+        repo.description || "No description"
+      }</p>
                         <p class="card-text" id="repo-language-${repo.id}"></p>
                     </div>
                 </div>
@@ -93,14 +103,22 @@ async function githubHandler(document) {
     projectList += "</div>";
     document.getElementById("content-github").innerHTML = projectList;
     for (const repo of data) {
-      const languageElement = document.getElementById("repo-language-" + repo.id);
-      const languages = await fetch(repo.languages_url).then(res => res.json());
-      localStorage.setItem("githubLanguages-" + repo.id, JSON.stringify(languages));
+      const languageElement = document.getElementById(
+        "repo-language-" + repo.id,
+      );
+      const languages = await fetch(repo.languages_url).then((res) =>
+        res.json()
+      );
+      localStorage.setItem(
+        "githubLanguages-" + repo.id,
+        JSON.stringify(languages),
+      );
       if (languageElement) {
-        languageElement.innerHTML = `Primary language: ${Object.keys(languages).join(`, `) || "Unknown"}`;
+        languageElement.innerHTML = `Languages: ${
+          Object.keys(languages).slice(0, 3).join(`, `) || "Unknown"
+        }`;
       }
     }
-
   } catch (error) {
     console.error("Error fetching GitHub repos:", error);
     document.getElementById("content-github").innerHTML =
@@ -118,7 +136,7 @@ function huggingfaceCacheHandler(document) {
       if (model.private) {
         continue; // Skip private
       }
-      let modelWidget="";
+      let modelWidget = "";
       if (count % 3 === 0) {
         modelWidget = `</div><div class="row"><div class="col-md-4 mb-4">`;
       } else {
@@ -149,11 +167,13 @@ function huggingfaceCacheHandler(document) {
 async function huggingfaceHandler(document) {
   try {
     // this logic decides if we're on github pages or not, and if we are, it skips the runtime creation of huggingface content, as the content will already be created at build time. This is a bit janky, but it works and I don't want to spend more time on this than I already have.
-    const notOnPages = await fetch("/health")
+    const notOnPages = await fetch("/health");
     let onPages = false;
     switch (notOnPages.status) {
       case 404:
-        console.warn("Not on the main page, skipping the runtime creation of huggingface content.");
+        console.warn(
+          "Not on the main page, skipping the runtime creation of huggingface content.",
+        );
         onPages = true;
         break;
       case 200:
@@ -178,7 +198,7 @@ async function huggingfaceHandler(document) {
         continue; // Skip private models, why the fuck does huggingface expose private models in the api?
         //Literally what's the point?!
       }
-      let modelWidget="";
+      let modelWidget = "";
       if (count % 3 === 0) {
         modelWidget = `</div><div class="row"><div class="col-md-4 mb-4">`;
       } else {
@@ -191,7 +211,11 @@ async function huggingfaceHandler(document) {
                         <p class="card-text">Pipeline: ${
         model.pipeline_tag || "No pipeline tag"
       }</p>
-                        ${!onPages ? `<a href=/models/${model.modelId} target="_blank" class="btn btn-primary">View Model Card</a>` : ""}
+                        ${
+        !onPages
+          ? `<a href=/models/${model.modelId} target="_blank" class="btn btn-primary">View Model Card</a>`
+          : ""
+      }
                         <a href="https://huggingface.co/${model.modelId}" target="_blank" class="btn btn-primary">View on Hugging Face</a>
                     </div>
                 </div>    
@@ -264,15 +288,24 @@ async function spacesHandler(document) {
 }
 
 self.addEventListener("DOMContentLoaded", () => {
-  console.log(localStorage.getItem("githubData") !== null, localStorage.getItem("lastGithubFetch") !== null, parseInt(localStorage.getItem("lastGithubFetch")) >= Date.now() - 1000 * 60 * 6);
-  if (localStorage.getItem("githubData") !== null && localStorage.getItem("lastGithubFetch") !== null && parseInt(localStorage.getItem("lastGithubFetch")) >= Date.now() - 1000 * 60 * 60) {
+  //console.log(localStorage.getItem("githubData") !== null, localStorage.getItem("lastGithubFetch") !== null, parseInt(localStorage.getItem("lastGithubFetch")) >= Date.now() - 1000 * 60 * 6);
+  if (
+    localStorage.getItem("githubData") !== null &&
+    localStorage.getItem("lastGithubFetch") !== null &&
+    parseInt(localStorage.getItem("lastGithubFetch")) >=
+      Date.now() - 1000 * 60 * 60
+  ) {
     console.log("GitHub data found in localStorage, using cached data.");
     githubCacheHandler(document);
   } else {
     console.log("No GitHub data in localStorage, fetching from API.");
     githubHandler(document);
   }
-  if (localStorage.getItem("huggingfaceData") !== null && parseInt(localStorage.getItem("lastHuggingFaceFetch")) >= Date.now() - 1000 * 60 * 60) {
+  if (
+    localStorage.getItem("huggingfaceData") !== null &&
+    parseInt(localStorage.getItem("lastHuggingFaceFetch")) >=
+      Date.now() - 1000 * 60 * 60
+  ) {
     console.log("Hugging Face data found in localStorage, using cached data.");
     huggingfaceCacheHandler(document);
     spacesCacheHandler(document);
