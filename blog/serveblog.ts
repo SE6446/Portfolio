@@ -89,7 +89,9 @@ export async function blogSave(req: Request): Promise<Response> {
       console.error("Failed to save blog HTML locally.", e);
       return new Response("Failed to save blog HTML locally.", { status: 500 });
     }
+  }
     return new Response("Blog saved locally.", { status: 200 });
+    
     
 }
 

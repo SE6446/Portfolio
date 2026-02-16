@@ -22,7 +22,7 @@ export async function handler(req: Request): Promise<Response> {
             return await blogDelete(req);
         }
     }
-  }
+  
   if (url.pathname.startsWith("/health")) {
     return healthCheck();
   }
