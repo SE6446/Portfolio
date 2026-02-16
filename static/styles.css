@@ -120,6 +120,10 @@ a:hover {
   margin-bottom: 2rem;
 }
 
+.card p, small {
+  color: var(--text-main) !important; /* Muted text for descriptions */
+}
+
 .card:hover {
   box-shadow: 0 6px 12px var(--shadow); /* Slightly stronger shadow on hover */
 }
