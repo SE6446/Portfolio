@@ -1,17 +1,17 @@
 function _copy() {
-    const email = "archiemac07@outlook.com";
-    navigator.clipboard.writeText(email).then(() => {
-        alert("Email address copied to clipboard!");
-    }).catch(err => {
-        console.error("Failed to copy email: ", err);
-    });
+  const email = "archiemac07@outlook.com";
+  navigator.clipboard.writeText(email).then(() => {
+    alert("Email address copied to clipboard!");
+  }).catch((err) => {
+    console.error("Failed to copy email: ", err);
+  });
 }
 
-async function githubHandler(document) {
+function githubCacheHandler(document) {
   try {
     // 1. Your 'await' call to the Deno backend or external API
-    const response = await fetch("https://api.github.com/users/SE6446/repos");
-    const data = await response.json();
+    const response = localStorage.getItem("githubData");
+    const data = JSON.parse(response);
     // 2. Process the data and generate HTML content
     let projectList = "";
     let count = 0;
@@ -25,11 +25,15 @@ async function githubHandler(document) {
       repoWidget += `
             <a href="${repo.html_url}" target="_blank">
                 <div class="card">
+                <div class="right-align"><p class="card-text small">${
+        repo.fork ? "Forked" : "Homebrew"
+      }</p></div>
                     <div class="card-body">
                         <h5 class="card-title">${repo.full_name}</h5>
                         <p class="card-text">${
         repo.description || "No description"
       }</p>
+                        <p class="card-text" id="repo-language-${repo.id}"></p>
                     </div>
                 </div>
             </a>
@@ -39,6 +43,20 @@ async function githubHandler(document) {
     }
     projectList += "</div>";
     document.getElementById("content-github").innerHTML = projectList;
+    for (const repo of data) {
+      const languageElement = document.getElementById(
+        "repo-language-" + repo.id,
+      );
+      const languages = JSON.parse(
+        localStorage.getItem("githubLanguages-" + repo.id),
+      );
+
+      if (languageElement) {
+        languageElement.innerHTML = `Languages: ${
+          Object.keys(languages).slice(0, 3).join(`, `) || "Unknown"
+        }`;
+      }
+    }
   } catch (error) {
     console.error("Error fetching GitHub repos:", error);
     document.getElementById("content-github").innerHTML =
@@ -46,14 +64,116 @@ async function githubHandler(document) {
   }
 }
 
+async function githubHandler(document) {
+  try {
+    // 1. Your 'await' call to the Deno backend or external API
+    const response = await fetch("https://api.github.com/users/SE6446/repos");
+    const data = await response.json();
+    localStorage.setItem("githubData", JSON.stringify(data));
+    localStorage.setItem("lastGithubFetch", Date.now());
+    // 2. Process the data and generate HTML content
+    let projectList = "";
+    let count = 0;
+    for (const repo of data) {
+      let repoWidget = "";
+      if (count % 3 === 0) {
+        repoWidget = `</div><div class="row"><div class="col-md-4 mb-4">`;
+      } else {
+        repoWidget = `<div class="col-md-4 mb-4">`;
+      }
+      repoWidget += `
+            <a href="${repo.html_url}" target="_blank">
+                <div class="card">
+                <div class="right-align"><p class="card-text small">${
+        repo.fork ? "Forked" : "Homebrew"
+      }</p></div>
+                    <div class="card-body">
+                        <h5 class="card-title">${repo.full_name}</h5>
+                        <p class="card-text">${
+        repo.description || "No description"
+      }</p>
+                        <p class="card-text" id="repo-language-${repo.id}"></p>
+                    </div>
+                </div>
+            </a>
+        </div>`;
+      projectList += repoWidget;
+      count++;
+    }
+    projectList += "</div>";
+    document.getElementById("content-github").innerHTML = projectList;
+    for (const repo of data) {
+      const languageElement = document.getElementById(
+        "repo-language-" + repo.id,
+      );
+      const languages = await fetch(repo.languages_url).then((res) =>
+        res.json()
+      );
+      localStorage.setItem(
+        "githubLanguages-" + repo.id,
+        JSON.stringify(languages),
+      );
+      if (languageElement) {
+        languageElement.innerHTML = `Languages: ${
+          Object.keys(languages).slice(0, 3).join(`, `) || "Unknown"
+        }`;
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching GitHub repos:", error);
+    document.getElementById("content-github").innerHTML =
+      "<p>Failed to load GitHub repositories.</p>";
+  }
+}
+
+function huggingfaceCacheHandler(document) {
+  try {
+    const response = localStorage.getItem("huggingfaceData");
+    const data = JSON.parse(response);
+    let modelList = "";
+    let count = 0;
+    for (const model of data) {
+      if (model.private) {
+        continue; // Skip private
+      }
+      let modelWidget = "";
+      if (count % 3 === 0) {
+        modelWidget = `</div><div class="row"><div class="col-md-4 mb-4">`;
+      } else {
+        modelWidget = `<div class="col-md-4 mb-4">`;
+      }
+      modelWidget += `
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">${model.modelId}</h5>
+                        <p class="card-text">Pipeline: ${
+        model.pipeline_tag || "No pipeline tag"
+      }</p>
+                        <a href=/models/${model.modelId} target="_blank" class="btn btn-primary">View Model Card</a>
+                        <a href="https://huggingface.co/${model.modelId}" target="_blank" class="btn btn-primary">View on Hugging Face</a>
+                    </div>
+                </div>    
+            </div>`;
+      modelList += modelWidget;
+      count++;
+    }
+    modelList += "</div><div>";
+    document.getElementById("content-huggingface").innerHTML = modelList;
+  } catch (error) {
+    console.error("Error caching Hugging Face models:", error);
+  }
+}
+
 async function huggingfaceHandler(document) {
   try {
     // this logic decides if we're on github pages or not, and if we are, it skips the runtime creation of huggingface content, as the content will already be created at build time. This is a bit janky, but it works and I don't want to spend more time on this than I already have.
-    const notOnPages = await fetch("/health")
+    const notOnPages = await fetch("/health");
     let onPages = false;
     switch (notOnPages.status) {
       case 404:
-        console.warn("Not on the main page, skipping the runtime creation of huggingface content.");
+        console.warn(
+          "Not on the main page, skipping the runtime creation of huggingface content.",
+        );
         onPages = true;
         break;
       case 200:
@@ -68,6 +188,8 @@ async function huggingfaceHandler(document) {
       "https://huggingface.co/api/models?author=SE6446",
     );
     const data = await response.json();
+    localStorage.setItem("huggingfaceData", JSON.stringify(data));
+    localStorage.setItem("lastHuggingFaceFetch", Date.now());
     let count = 0;
     let modelList = "";
 
@@ -76,7 +198,7 @@ async function huggingfaceHandler(document) {
         continue; // Skip private models, why the fuck does huggingface expose private models in the api?
         //Literally what's the point?!
       }
-      let modelWidget="";
+      let modelWidget = "";
       if (count % 3 === 0) {
         modelWidget = `</div><div class="row"><div class="col-md-4 mb-4">`;
       } else {
@@ -89,7 +211,11 @@ async function huggingfaceHandler(document) {
                         <p class="card-text">Pipeline: ${
         model.pipeline_tag || "No pipeline tag"
       }</p>
-                        ${!onPages ? `<a href=/models/${model.modelId} target="_blank" class="btn btn-primary">View Model Card</a>` : ""}
+                        ${
+        !onPages
+          ? `<a href=/models/${model.modelId} target="_blank" class="btn btn-primary">View Model Card</a>`
+          : ""
+      }
                         <a href="https://huggingface.co/${model.modelId}" target="_blank" class="btn btn-primary">View on Hugging Face</a>
                     </div>
                 </div>    
@@ -106,6 +232,16 @@ async function huggingfaceHandler(document) {
   }
 }
 
+function spacesCacheHandler(document) {
+  try {
+    const response = localStorage.getItem("huggingfaceSpacesData");
+    if (response) {
+      document.getElementById("content-spaces").innerHTML = response;
+    }
+  } catch (error) {
+    console.error("Error caching Hugging Face spaces:", error);
+  }
+}
 
 async function spacesHandler(document) {
   const uri = `https://huggingface.co/api/spaces?author=SE6446`;
@@ -142,6 +278,8 @@ async function spacesHandler(document) {
       spaceList = "<p>No publically available spaces found.</p>";
     }
     document.getElementById("content-spaces").innerHTML = spaceList;
+    localStorage.setItem("huggingfaceSpacesData", spaceList);
+    localStorage.setItem("lastHuggingFaceFetch", Date.now());
   } catch (error) {
     console.error("Error fetching Hugging Face spaces:", error);
     document.getElementById("content-spaces").innerHTML =
@@ -150,7 +288,30 @@ async function spacesHandler(document) {
 }
 
 self.addEventListener("DOMContentLoaded", () => {
-  githubHandler(document);
-  huggingfaceHandler(document);
-  spacesHandler(document);
+  //console.log(localStorage.getItem("githubData") !== null, localStorage.getItem("lastGithubFetch") !== null, parseInt(localStorage.getItem("lastGithubFetch")) >= Date.now() - 1000 * 60 * 6);
+  if (
+    localStorage.getItem("githubData") !== null &&
+    localStorage.getItem("lastGithubFetch") !== null &&
+    parseInt(localStorage.getItem("lastGithubFetch")) >=
+      Date.now() - 1000 * 60 * 60
+  ) {
+    console.log("GitHub data found in localStorage, using cached data.");
+    githubCacheHandler(document);
+  } else {
+    console.log("No GitHub data in localStorage, fetching from API.");
+    githubHandler(document);
+  }
+  if (
+    localStorage.getItem("huggingfaceData") !== null &&
+    parseInt(localStorage.getItem("lastHuggingFaceFetch")) >=
+      Date.now() - 1000 * 60 * 60
+  ) {
+    console.log("Hugging Face data found in localStorage, using cached data.");
+    huggingfaceCacheHandler(document);
+    spacesCacheHandler(document);
+  } else {
+    console.log("No Hugging Face data in localStorage, fetching from API.");
+    huggingfaceHandler(document);
+    spacesHandler(document);
+  }
 });

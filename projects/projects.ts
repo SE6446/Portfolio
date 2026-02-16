@@ -32,13 +32,12 @@ export function projectHandler() {
   return htmlIndex;
 }
 
-
 /**
  * Fetches GitHub repositories for a specific user and generates HTML content
  * to display them in a structured format.
  *
  * @deprecated This function is no longer used and will be removed in future versions. It was originally intended to embed Hugging Face spaces directly into the main page, but this approach has been reconsidered due to client side rendering beinf chosen over serverside.
- * 
+ *
  * @param htmlIndex - The HTML template string where the GitHub repositories
  *                    will be injected.
  * @returns A Promise that resolves to the updated HTML string with the
@@ -89,7 +88,6 @@ export async function githubHandler(htmlIndex: string): Promise<string> {
   return htmlIndex;
 }
 
-
 /**
  * Fetches the list of models authored by "SE6446" from Hugging Face,
  * filters out private models, and generates HTML widgets for each public model.
@@ -97,7 +95,7 @@ export async function githubHandler(htmlIndex: string): Promise<string> {
  * the `{{huggingface_models}}` placeholder.
  *
  * @deprecated This function is no longer used and will be removed in future versions. It was originally intended to embed Hugging Face spaces directly into the main page, but this approach has been reconsidered due to client side rendering beinf chosen over serverside.
- * 
+ *
  * @param htmlIndex - The HTML template string containing the `{{huggingface_models}}` placeholder.
  * @returns A promise that resolves to the updated HTML string with Hugging Face model widgets.
  *
@@ -152,20 +150,21 @@ export async function huggingfaceHandler(htmlIndex: string): Promise<string> {
 }
 
 export function privateProjectHandler(htmlIndex: string): string {
-    try{
-        const privateProjects = Deno.readTextFileSync(
-            "./projects/private_projects.jsonl",
-        ).split("\n").filter((line) => line.trim() !== "").map((line) =>
-            JSON.parse(line)
-        );
-        if (privateProjects.length === 0) {
-            return htmlIndex.replace(
-                "{{private_projects}}", "<p>No Private project to show for now.</p>"
-            );
-        }
-        let privateProjectContent = "";
-        for (const project of privateProjects) {
-          privateProjectContent += `
+  try {
+    const privateProjects = Deno.readTextFileSync(
+      "./projects/private_projects.jsonl",
+    ).split("\n").filter((line) => line.trim() !== "").map((line) =>
+      JSON.parse(line)
+    );
+    if (privateProjects.length === 0) {
+      return htmlIndex.replace(
+        "{{private_projects}}",
+        "<p>No Private project to show for now.</p>",
+      );
+    }
+    let privateProjectContent = "";
+    for (const project of privateProjects) {
+      privateProjectContent += `
               <div class="row">
                   <div class="col-md-4 mb-4">
                       <div class="card">
@@ -175,19 +174,20 @@ export function privateProjectHandler(htmlIndex: string): string {
                           </div>
                       </div>
                   </div>`;
-        }
-        privateProjectContent += "</div></div>";
-        htmlIndex = htmlIndex.replace("{{private_projects}}", privateProjectContent);
-        return htmlIndex;
-
-
-    } catch (_error) {
-        // This should only error out if the file doesn't exist, in which case we can just return the page with no private projects shown.
-        return htmlIndex.replace(
-            "{{private_projects}}",
-            "<p>No Private project to show for now.</p>",
-        );
     }
+    privateProjectContent += "</div></div>";
+    htmlIndex = htmlIndex.replace(
+      "{{private_projects}}",
+      privateProjectContent,
+    );
+    return htmlIndex;
+  } catch (_error) {
+    // This should only error out if the file doesn't exist, in which case we can just return the page with no private projects shown.
+    return htmlIndex.replace(
+      "{{private_projects}}",
+      "<p>No Private project to show for now.</p>",
+    );
+  }
 }
 
 export async function huggingfaceGetModelCard(
@@ -230,7 +230,7 @@ export async function huggingfaceGetModelCard(
     //console.log(markdown);
     const htmlContent = render(markdown);
     //console.log(htmlContent);
-    template = template.replace("{{content}}", htmlContent)
+    template = template.replace("{{content}}", htmlContent);
     template = template.replace("{{title}}", modelId);
     return new Response(template, {
       headers: { "Content-Type": "text/html" },
@@ -308,7 +308,7 @@ function updatePrivateProjects(
 }
 
 export async function receivePrivateProject(req: Request): Promise<Response> {
-  const body = await req.json(); 
+  const body = await req.json();
   //TODO: Add validation for the body and check for api token in headers before allowing the project to be added.
   try {
     updatePrivateProjects(body);
