@@ -1,6 +1,6 @@
 import { serveDir } from "@std/http/";
 import { blogDelete, blogHandler, blogSave } from "./blog/serveblog.ts";
-import { githubHandler, huggingfaceGetModelCard, huggingfaceHandler, privateProjectHandler, receivePrivateProject, spacesHandler } from "./projects/projects.ts";
+import { huggingfaceGetModelCard, privateProjectHandler, receivePrivateProject } from "./projects/projects.ts";
 import { healthCheck } from "./api/api.ts";
 export async function handler(req: Request): Promise<Response> {
     const url = new URL(req.url);
