@@ -9,6 +9,10 @@
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
     crossorigin="anonymous"
   >
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-6sQFqkLhYj1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b"
+    crossorigin="anonymous"></script>
   <link rel="stylesheet" href="/styles.css">
   <meta
     name="viewport"
@@ -18,8 +22,37 @@
   <title>{{title}}</title>
 </head>
 <html>
-  <body class="p-4">
-    {{content}}
-    <a href="/">back to main page</a>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" style="margin-left: 0.5rem" href="/#"
+        >AM's Portfolio</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/aboutme">About Me</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/blog">Blog</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <main class="p-4">
+      {{content}}
+      <a href="/">back to main page</a>
+    </main>
   </body>
 </html>

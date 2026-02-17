@@ -162,10 +162,12 @@ small {
 }
 
 .navbar a {
-  color: var(--peach);
+  color: var(--peach) !important;
   /* Peach links pop on Navy bg */
 }
-
+.nav-links a:hover {
+  border-bottom-color: rgba(0,0,0,0) !important;
+}
 .navbar a:hover {
   color: var(--text-inv) !important;
   /* Off-white on hover for better contrast */
