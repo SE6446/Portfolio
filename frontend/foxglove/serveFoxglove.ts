@@ -14,7 +14,7 @@ export async function serveFoxglove(req: Request): Promise<Response | null> {
   const url = new URL(req.url);
 
   if (url.pathname === "/foxglove" || url.pathname === "/foxglove/") {
-    const html = Deno.readTextFileSync("./foxglove/static/index.html");
+    const html = Deno.readTextFileSync("./foxglove/static/image_backend.html");
     return new Response(html, {
       headers: { "Content-Type": "text/html" },
     });
