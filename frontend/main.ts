@@ -2,9 +2,15 @@ import { serveDir } from "@std/http/";
 import { blogDelete, blogHandler, blogSave } from "./blog/serveblog.ts";
 import { huggingfaceGetModelCard, privateProjectHandler, receivePrivateProject } from "./projects/projects.ts";
 import { healthCheck } from "./api/api.ts";
+import { serveFoxglove, startFoxgloveBackend } from "./foxglove/serveFoxglove.ts";
 export async function handler(req: Request): Promise<Response> {
     const url = new URL(req.url);
-    if (url.pathname.startsWith("/blog")) {
+    if (url.pathname.startsWith("/foxglove")) {
+    const foxgloveResponse = await serveFoxglove(req);
+    if (foxgloveResponse) return foxgloveResponse;
+  }
+
+  if (url.pathname.startsWith("/blog")) {
         if (req.method === "POST") {
             return await blogSave(req);
         }
@@ -63,3 +69,11 @@ function mainPageHandler(): Response {
 }
 
 Deno.serve(handler);
+
+// Start the demo Foxglove backend on port 9000. In production this would be a
+// separate service; it is started here so the demo works immediately.
+try {
+  startFoxgloveBackend(9000);
+} catch (err) {
+  console.warn("Could not start Foxglove demo backend:", err);
+}
